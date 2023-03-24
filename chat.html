@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat Room</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* Styles for the chat room */
+      body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        background-color: #333;
+        color: #fff;
+        margin: 0;
+        padding: 10px;
+        text-align: center;
+      }
+
+      #messages {
+        border: 1px solid #ccc;
+        margin: 10px;
+        max-height: 300px;
+        overflow-y: scroll;
+        padding: 10px;
+      }
+
+      #message-form {
+        margin: 10px;
+        text-align: center;
+      }
+
+      #message-input {
+        border: 1px solid #ccc;
+        font-size: 16px;
+        padding: 5px;
+        width: 60%;
+      }
+
+      button[type="submit"] {
+        background-color: #333;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 5px 10px;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #555;
+      }
+
+      /* Styles for the "Made by Faris" message */
+      #made-by-faris {
+        background-color: #333;
+        color: #fff;
+        font-size: 12px;
+        padding: 5px;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to the Chat Room</h1>
+    <div id="messages"></div>
+    <form id="message-form">
+      <input type="text" id="message-input" autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+
+    <div id="made-by-faris">Made by Faris</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const messageForm = document.querySelector('#message-form');
+      const messageInput = document.querySelector('#message-input');
+      const messagesDiv = document.querySelector('#messages');
+
+      // Handle new chat message
+      socket.on('chat message', (message) => {
+        const p = document.createElement('p');
+        p.textContent = message;
+        messagesDiv.appendChild(p);
+      });
+
+      // Handle form submission
+      messageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+          socket.emit('chat message', message);
+          messageInput.value = '';
+        }
+      });
+    </script>
+  </body>
+</html>
